@@ -1,0 +1,14 @@
+/Users/lv/Documents/QUT/FIN563/FinalProject/bin/Debug/net8.0/FinalProject
+/Users/lv/Documents/QUT/FIN563/FinalProject/bin/Debug/net8.0/FinalProject.deps.json
+/Users/lv/Documents/QUT/FIN563/FinalProject/bin/Debug/net8.0/FinalProject.runtimeconfig.json
+/Users/lv/Documents/QUT/FIN563/FinalProject/bin/Debug/net8.0/FinalProject.dll
+/Users/lv/Documents/QUT/FIN563/FinalProject/bin/Debug/net8.0/FinalProject.pdb
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/FinalProject.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/FinalProject.AssemblyInfoInputs.cache
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/FinalProject.AssemblyInfo.cs
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/FinalProject.csproj.CoreCompileInputs.cache
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/FinalProject.dll
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/refint/FinalProject.dll
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/FinalProject.pdb
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/FinalProject.genruntimeconfig.cache
+/Users/lv/Documents/QUT/FIN563/FinalProject/obj/Debug/net8.0/ref/FinalProject.dll
