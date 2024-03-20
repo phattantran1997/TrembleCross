@@ -12,6 +12,14 @@ class Board{
         this.cells = cells;
     }
 
+    public override string ToString(){   
+        return string.Join(",", cells.Select(cell => cell.Value));
+;
+    }
+    public void updateCells(int cell){
+        cells[cell].Value = "X";
+    }
+
     // Return Human readable table
     public string formatTable(){
         int rowCount = cells.Max(cell => cell.Row) + 1;
