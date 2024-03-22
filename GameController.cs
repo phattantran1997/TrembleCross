@@ -1,5 +1,6 @@
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Linq;
 using System.Text;
 using System.Security;
@@ -7,52 +8,40 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 public class GameController{
 
-
-    // Can load Json data haven't figured out how to parse it to 
-    // tremblecrossgame. might need to overload constructor 
+ 
     public void loadGame(){
+
+        // path to Tremble cross
         var TrembleCrossDir = new DirectoryInfo(Directory.GetCurrentDirectory());
         string filePath = TrembleCrossDir.Parent.Parent.Parent.ToString()+"\\TrembleCross\\game.json";
 
+        // Read File
         string existingJson = File.ReadAllText(filePath);
-
-        System.Console.WriteLine(existingJson);
-
 
         // Parse the JSON data
         var jsonDocument = JsonDocument.Parse(existingJson);
         var root = jsonDocument.RootElement;
 
-        // Extract the GameType
-        // var Board = root.GetProperty("files")[1].GetProperty("Board");
-        var GameType = root.GetProperty("files")[0].GetProperty("GameType");
-        var Board = root.GetProperty("files")[0].GetProperty("Board");
-        var Turn = root.GetProperty("files")[0].GetProperty("Turn");
+        // Make TrembleCross List
+        List<TrembleCrossGame> trembleCrossGames = new List<TrembleCrossGame>();
+        for( int i = 0; i < root.GetProperty("files").GetArrayLength();i++){
 
-        System.Console.WriteLine(GameType);
-        System.Console.WriteLine(Board);
-        System.Console.WriteLine(Turn);
-        
-        // Create a list of TrembleCross games
-        List<TrembleCrossGame> allGame = new List<TrembleCrossGame>();
-        // allGame.Add(gameType);
+            // In future can do if code to check gametype
+            // var GameType = root.GetProperty("files")[i].GetProperty("GameType");
 
-        // Print the list
-        // Console.WriteLine("TrembleCross Games:");
-      
-        // Console.WriteLine(allGame[0].ReturnBoardState());
-        
+            // Extract Board and Turn information from Json file
+            var Board = root.GetProperty("files")[i].GetProperty("Board").GetString();
 
-
-        // List<TrembleCrossGame> ExistingGame = 
-        // JsonSerializer.Deserialize<List<TrembleCrossGame>>(existingJson)??
-        // new List<TrembleCrossGame>();
-        //filename
-        
-        // System.Console.WriteLine($"Current number of existing game {ExistingGame.Count}");
-        //object
+            var Turn = root.GetProperty("files")[i].GetProperty("Turn").GetInt32();            
+            
+            // Add it to the TrembleCross List
+            trembleCrossGames.Add(new TrembleCrossGame(Board, Turn));
+        }
 
     }
+
+
+    // Only saves 1 game
     public void SaveGame(object game){
 
         // Get the directory for Tremblecross
@@ -85,4 +74,5 @@ public class GameController{
     }
 
 }
+
 // 
