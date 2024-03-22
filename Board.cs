@@ -1,23 +1,30 @@
 class Board{
-
+    int x_dim {get;set;}
+    int y_dim{get;set;}
     List<Cell> cells {get; set;}
     public Board(int x_dim, int y_dim){
+        this.x_dim =x_dim;
+        this.y_dim = y_dim;
         List<Cell> cells = new List<Cell>();
 
         for(int i = 0; i < x_dim; i++){
             for(int j =0; j < y_dim; j++){
-                cells.Add(new Cell(i,j," "));
+                cells.Add(new Cell(i,j,new Piece()));
             }
         }
         this.cells = cells;
     }
 
     public override string ToString(){   
-        return string.Join(",", cells.Select(cell => cell.Value));
+        return string.Join(",", cells.Select(cell => cell.valuePiece.name));
 ;
     }
-    public void updateCells(int cell){
-        cells[cell].Value = "X";
+    public bool updateCells(int cell , Piece playerPiece){
+        if(this.cells[cell].valuePiece.name == null){
+           this.cells[cell].valuePiece = playerPiece;
+           return true;     
+        }
+        return false;
     }
 
     // Return Human readable table
@@ -29,12 +36,9 @@ class Board{
 
         foreach (var cell in cells)
         {
-            tableArray[cell.Row, cell.Column] = cell.Value;
+            tableArray[cell.Row, cell.Column] = cell.valuePiece.name;
         }
 
-
-        Console.Clear();
-        
         int tableWidth = colCount * 4;
 
         // Empty String
@@ -48,9 +52,7 @@ class Board{
         
         for(int i = 0; i < rowCount;i++){
             for(int j = 0; j < colCount;j++){
-                result += "|" + AlignCentre(tableArray[i,j], width) + "|";
-
-                
+                result += "|" + AlignCentre(tableArray[i,j] ?? "", width) + "|";
             }
             result += "\n"+new string('-',tableWidth+colCount) + "\n";
         }      

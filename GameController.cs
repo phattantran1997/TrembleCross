@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 public class GameController{
 
  
-    public void loadGame(){
+    public void loadGame(string pathFileName){
 
         // path to Tremble cross
         var TrembleCrossDir = new DirectoryInfo(Directory.GetCurrentDirectory());
