@@ -6,8 +6,9 @@ class TrembleCrossGame : IGame{
     public List<Board> moveHistory {get;set;}
     public Player? winner { get; set; }
 
-    public TrembleCrossGame(Board board,int turn){
-        gameCurrentState = board;
+    public TrembleCrossGame(string board,int turn){
+
+        this.gameCurrentState = stringToBoard(board);
         this.turn = turn; 
     }
     public TrembleCrossGame(int boardSize){
@@ -43,6 +44,22 @@ class TrembleCrossGame : IGame{
         moveHistory.Add(this.gameCurrentState);
 
     }
+
+    // Convert from String to Board class for Json file
+    public Board stringToBoard(string board){
+        string[] allPositions = board.Split(",");
+
+
+        Board loadBoard = new Board(1,allPositions.Length);
+        for(int i = 0; i < allPositions.Length; i++){
+            if(allPositions[i] == "X"){
+                loadBoard.updateCells(i);
+            }
+        }
+        return loadBoard;
+    }
+
+    // Return Board State
     public string ReturnBoardState(){
         return this.gameCurrentState.formatTable();
     }
