@@ -16,10 +16,19 @@ class TrembleCrossGame : IGame
         players.Add(player1);
         if (isPlayWithHuman)
         {
+            //human player
             Player player2 = new Player("player2", 2);
             player2.piece = new Piece("X", player2.PlayerID);
             players.Add(player2);
         }
+        else
+        {
+            //computer
+            Player computerPlayer = new Player("computer", 2);
+            computerPlayer.piece = new Piece("X", computerPlayer.PlayerID);
+            players.Add(computerPlayer);
+        }
+
 
         this.turn = 0;
         this.gameCurrentState = new Board(1, boardSize);
@@ -33,37 +42,104 @@ class TrembleCrossGame : IGame
     }
     public TrembleCrossGame(string board, int turn)
     {
-
         this.gameCurrentState = stringToBoard(board);
         this.turn = turn;
     }
-    public void play()
-    {
-        int currentPlayer = 1;
-        while (true)
-        {
-            Console.WriteLine($"Player {currentPlayer}'s turn - please input your cell want to play:");
-            bool checkuserInput = int.TryParse(Console.ReadLine(), out int userInput);
-            if (!checkuserInput)
-            {
-                Console.WriteLine("Invalid input format. Please enter your move again.");
-                continue;
-            }
-            else
-            {
-                if(!this.gameCurrentState.updateCells(userInput, players.FirstOrDefault(p => p.PlayerID == currentPlayer).piece)){
-                    Console.WriteLine("This cell is already occupied. Please choose another cell.");
-                    continue;
-                }
-            }
-            listMoveHistories.Add(gameCurrentState);
-            Console.WriteLine(this.gameCurrentState.formatTable());
-            currentPlayer = currentPlayer == 1 ? 2 : 1;
+    // public void play(bool isPlayWithHuman)
+    // {
+    //     int currentPlayer = 1;
+    //     int userInput =0 ;
+    //     while (true)
+    //     {
 
+    //         Console.WriteLine($"👉 Player {currentPlayer}'s turn - please input your cell want to play:");
+    //         if(isPlayWithHuman)
+    //             userInput = int.TryParse(Console.ReadLine(), out userInput);
+    //         else{
+
+    //         }
+    //         if (!checkuserInput)
+    //         {
+    //             Console.WriteLine("⛳️ Invalid input format. Please enter your move again. ⛳️");
+    //             continue;
+    //         }
+    //         else
+    //         {
+    //             if(!this.gameCurrentState.updateCells(userInput, players.FirstOrDefault(p => p.PlayerID == currentPlayer).piece)){
+    //                 Console.WriteLine("This cell is already occupied. Please choose another cell.");
+    //                 continue;
+    //             }
+    //         }
+    //         listMoveHistories.Add(gameCurrentState);
+    //         Console.WriteLine(this.gameCurrentState.formatTable());
+
+    //         if(!processWinner(userInput))
+    //         {
+
+    //             currentPlayer = currentPlayer == 1 ? 2 : 1;
+
+    //         }else{
+    //             break;
+    //         }    
+
+    //     }
+    // }
+
+    public void play(bool isPlayWithHuman)
+    {
+       int currentPlayer = 1;
+    int userInput = 0;
+    Random random = new Random(); // Random number generator for computer's move
+
+    while (true)
+    {
+        Console.WriteLine($"👉 Player {currentPlayer}'s turn - please input your cell to play:");
+
+        if (!isPlayWithHuman && currentPlayer == 2)
+        {  
+            do
+            {
+                //radom until valid Value
+                userInput = random.Next(0, this.gameCurrentState.cells.Count);
+            } while (!this.gameCurrentState.checkNotConflictCells(userInput));
         }
-        throw new NotImplementedException();
+        else if (!int.TryParse(Console.ReadLine(), out userInput))
+        {
+            Console.WriteLine("⛳️ Invalid input format. Please enter your move again. ⛳️");
+            continue;
+        }
+
+        if (!this.gameCurrentState.checkNotConflictCells(userInput))
+        {            
+            Console.WriteLine("⛳️ This cell is already occupied. Please choose another cell. ⛳️");
+            continue;
+        }
+
+        this.gameCurrentState.updateCells(userInput, players.FirstOrDefault(p => p.PlayerID == currentPlayer).piece);
+        listMoveHistories.Add(this.gameCurrentState); // Save game state
+        Console.WriteLine(this.gameCurrentState.formatTable());
+
+        if (processWinner())
+        {
+            winner = this.players.FirstOrDefault(item => item.PlayerID == this.gameCurrentState.cells[userInput].valuePiece.ownedByPlayer);
+            Console.WriteLine($"🎉 Player {currentPlayer} wins! 🎉");
+            break;
+        }
+        currentPlayer = currentPlayer == 1 ? 2 : 1;
+    }
     }
 
+    private bool processWinner()
+    {
+        for (int i = 0; i < this.gameCurrentState.cells.Count - 2; i++)
+        {
+            if (!string.IsNullOrEmpty(this.gameCurrentState.cells[i].valuePiece.name) && this.gameCurrentState.cells[i].valuePiece.name == this.gameCurrentState.cells[i + 1].valuePiece.name && this.gameCurrentState.cells[i].valuePiece.name == this.gameCurrentState.cells[i + 2].valuePiece.name)
+            {
+                return true; // Found three consecutive items
+            }
+        }
+        return false; // No three consecutive items found
+    }
     // Convert from String to Board class for Json file
     public Board stringToBoard(string board)
     {

@@ -10,7 +10,7 @@ class Program{
 
     static void Main(string[] args)
     {
-        string input = "";
+        string inputGameType = "";
         // GameController controller = new GameController();
 
         // TrembleCrossGame gim = new TrembleCrossGame(4);
@@ -20,24 +20,22 @@ class Program{
             Console.WriteLine("1. Create new game");
             Console.WriteLine("2. Load existing game");
             Console.WriteLine("0. Exit");
-            input = Console.ReadLine();
-            if(input =="0")
+            inputGameType = Console.ReadLine();
+            if(inputGameType =="0")
                 break;
-            else if(input =="1"){
-
-                
+            else if(inputGameType =="1"){
                 
                 Console.WriteLine("What game do you play? \n 1. TrembleCross \n 2. Reversi");
-                input = Console.ReadLine();
+                inputGameType = Console.ReadLine();
                 Console.WriteLine("Who do you want to play against? \n 1. Human \n 2. Computer");
                 var isPlayWithHuman = Console.ReadLine() == "1" ? true :false;
-                if(input =="1"){
+                if(inputGameType =="1"){
                     Console.WriteLine("How many size do you want?");
                     int boardSize = Int32.Parse(Console.ReadLine());
                     TrembleCrossGame trembleCrossGame = new TrembleCrossGame(boardSize,isPlayWithHuman);
-                    trembleCrossGame.play();
-                    
-                }else if(input =="2"){
+                    trembleCrossGame.play(isPlayWithHuman);
+
+                }else if(inputGameType =="2"){
                     //Todo GAME REVERSI 
                 }
                 else{
@@ -45,10 +43,10 @@ class Program{
                     continue; 
                 }
             }
-            else if(input =="2"){
+            else if(inputGameType =="2"){
 
             }
-            else if(input =="0"){
+            else if(inputGameType =="0"){
                 break;
             }
             else{

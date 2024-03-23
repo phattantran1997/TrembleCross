@@ -6,5 +6,5 @@ interface IGame{
     List<Board> listMoveHistories {get; set;}
     Player winner {get; set;}
     
-    void play();
+    void play(bool isPlayWithHuman);
 }

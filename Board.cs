@@ -1,7 +1,7 @@
 class Board{
     int x_dim {get;set;}
     int y_dim{get;set;}
-    List<Cell> cells {get; set;}
+    public List<Cell> cells {get; set;}
     public Board(int x_dim, int y_dim){
         this.x_dim =x_dim;
         this.y_dim = y_dim;
@@ -19,14 +19,15 @@ class Board{
         return string.Join(",", cells.Select(cell => cell.valuePiece.name));
 ;
     }
-    public bool updateCells(int cell , Piece playerPiece){
+    public void updateCells(int cell , Piece playerPiece){
+        this.cells[cell].valuePiece = playerPiece;
+    }
+     public bool checkNotConflictCells(int cell ){
         if(this.cells[cell].valuePiece.name == null){
-           this.cells[cell].valuePiece = playerPiece;
            return true;     
         }
         return false;
     }
-
     // Return Human readable table
     public string formatTable(){
         int rowCount = cells.Max(cell => cell.Row) + 1;
