@@ -22,6 +22,9 @@ class Board{
     public void updateCells(int cell , Piece playerPiece){
         this.cells[cell].valuePiece = playerPiece;
     }
+    public void updateCells(int cell, string name){
+        this.cells[cell].valuePiece = new Piece(name);
+    }
      public bool checkNotConflictCells(int cell ){
         if(this.cells[cell].valuePiece.name == null){
            return true;     

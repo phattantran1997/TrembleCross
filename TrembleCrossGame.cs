@@ -1,3 +1,5 @@
+using System.Xml;
+
 class TrembleCrossGame : IGame
 {
     public List<Player> players { get; set; } = [];
@@ -7,10 +9,12 @@ class TrembleCrossGame : IGame
     public List<Board> listMoveHistories { get; set; }
     public Player? winner { get; set; }
     public string pathFileName { get; set; }
+    public bool isPlayWithHuman { get; set; }
     public TrembleCrossGame(int boardSize, bool isPlayWithHuman)
     {
-        pathFileName = "/TrembleCross/game.json";
-        GameController gameController = new GameController();
+        // pathFileName = "/TrembleCross/game.json";
+        // GameController gameController = new GameController();
+
         Player player1 = new Player("player1", 1);
         player1.piece = new Piece("X", player1.PlayerID);
         players.Add(player1);
@@ -40,10 +44,32 @@ class TrembleCrossGame : IGame
         this.players = existingGame.players;
 
     }
-    public TrembleCrossGame(string board, int turn)
+    public TrembleCrossGame(string board, int turn, bool isPlayWithHuman)
     {
-        this.gameCurrentState = stringToBoard(board);
+        Player player1 = new Player("player1", 1);
+        player1.piece = new Piece("X", player1.PlayerID);
+        players.Add(player1);
+        this.isPlayWithHuman = isPlayWithHuman;
+        if (isPlayWithHuman)
+        {
+            //human player
+            Player player2 = new Player("player2", 2);
+            player2.piece = new Piece("X", player2.PlayerID);
+            players.Add(player2);
+        }
+        else
+        {
+            //computer
+            Player computerPlayer = new Player("computer", 2);
+            computerPlayer.piece = new Piece("X", computerPlayer.PlayerID);
+            players.Add(computerPlayer);
+        }
+
+
         this.turn = turn;
+        this.gameCurrentState = stringToBoard(board);
+        // Add initial board to move history
+        listMoveHistories = [this.gameCurrentState];
     }
     // public void play(bool isPlayWithHuman)
     // {
@@ -87,19 +113,20 @@ class TrembleCrossGame : IGame
 
     public void play(bool isPlayWithHuman)
     {
-       int currentPlayer = 1;
+    int currentPlayer = 1;
     int userInput = 0;
     Random random = new Random(); // Random number generator for computer's move
 
     while (true)
     {
         Console.WriteLine($"👉 Player {currentPlayer}'s turn - please input your cell to play:");
+        Console.WriteLine(this.gameCurrentState.formatTable());
 
         if (!isPlayWithHuman && currentPlayer == 2)
         {  
             do
             {
-                //radom until valid Value
+                //random until valid Value
                 userInput = random.Next(0, this.gameCurrentState.cells.Count);
             } while (!this.gameCurrentState.checkNotConflictCells(userInput));
         }
@@ -109,6 +136,10 @@ class TrembleCrossGame : IGame
             continue;
         }
 
+        if (userInput == -1){
+            // save game
+            break;
+        }
         if (!this.gameCurrentState.checkNotConflictCells(userInput))
         {            
             Console.WriteLine("⛳️ This cell is already occupied. Please choose another cell. ⛳️");
@@ -117,7 +148,6 @@ class TrembleCrossGame : IGame
 
         this.gameCurrentState.updateCells(userInput, players.FirstOrDefault(p => p.PlayerID == currentPlayer).piece);
         listMoveHistories.Add(this.gameCurrentState); // Save game state
-        Console.WriteLine(this.gameCurrentState.formatTable());
 
         if (processWinner())
         {
@@ -126,6 +156,7 @@ class TrembleCrossGame : IGame
             break;
         }
         currentPlayer = currentPlayer == 1 ? 2 : 1;
+        
     }
     }
 
@@ -143,19 +174,19 @@ class TrembleCrossGame : IGame
     // Convert from String to Board class for Json file
     public Board stringToBoard(string board)
     {
-        return null;
-        // string[] allPositions = board.Split(",");
+        // return null;
+        string[] allPositions = board.Split(",");
 
 
-        // Board loadBoard = new Board(1, allPositions.Length);
-        // for (int i = 0; i < allPositions.Length; i++)
-        // {
-        //     if (allPositions[i] == "X")
-        //     {
-        //         loadBoard.updateCells(i);
-        //     }
-        // }
-        // return loadBoard;
+        Board loadBoard = new Board(1, allPositions.Length);
+        for (int i = 0; i < allPositions.Length; i++)
+        {
+            if (allPositions[i] == "X")
+            {
+                loadBoard.updateCells(i,"X");
+            }
+        }
+        return loadBoard;
     }
 
     // Return Board State
@@ -176,6 +207,7 @@ class TrembleCrossGame : IGame
 
     public void saveFile()
     {
+
         throw new NotImplementedException();
     }
 
