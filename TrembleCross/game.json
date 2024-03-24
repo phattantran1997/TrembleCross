@@ -1,1 +1,1 @@
-{"files":[{"GameType":"trembleCross","Board":",,,,","Turn":"0","Humans":"True"},{"GameType":"trembleCross","Board":",X,,,","Turn":"0","Humans":"True"}]}
+{"files":[{"Board":",,,,","Turn":0,"Humans":true},{"Board":",X,,,","Turn":2,"Humans":false},{"Board":",X,X,,,","Turn":1,"Humans":true},{"Board":",X,X,,,X","Turn":2,"Humans":true},{"Board":",X,,X,,X,X","Turn":1,"Humans":false}]}
