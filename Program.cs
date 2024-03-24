@@ -11,10 +11,9 @@ class Program{
     static void Main(string[] args)
     {
         string inputGameType = "";
-        // GameController controller = new GameController();
+        GameController controller = new GameController();
 
-        // TrembleCrossGame gim = new TrembleCrossGame(4);
-        // controller.loadGame();
+
         while(true){
             Console.WriteLine("Choose an option:");
             Console.WriteLine("1. Create new game");
@@ -34,6 +33,7 @@ class Program{
                     int boardSize = Int32.Parse(Console.ReadLine());
                     TrembleCrossGame trembleCrossGame = new TrembleCrossGame(boardSize,isPlayWithHuman);
                     trembleCrossGame.play(isPlayWithHuman);
+                    controller.SaveGame(trembleCrossGame);
 
                 }else if(inputGameType =="2"){
                     //Todo GAME REVERSI 
@@ -45,6 +45,25 @@ class Program{
             }
             else if(inputGameType =="2"){
 
+                List<TrembleCrossGame> trembleCrossGames = controller.loadGame();
+                System.Console.WriteLine("\nThese are the current game boards");
+                for(int i = 0; i < trembleCrossGames.Count; i++){
+                    System.Console.WriteLine($"Pick {i} for \n{trembleCrossGames[i].ReturnBoardState()}");
+                }
+
+                int input = 0;
+                try{
+                    if(!int.TryParse(Console.ReadLine(), out input)){
+                        System.Console.WriteLine("Please enter a valid value\n");
+                        continue;
+                    }
+                    else
+                    trembleCrossGames[input].play(trembleCrossGames[input].isPlayWithHuman);
+                    controller.SaveGame(trembleCrossGames[input]);
+                }
+                catch(Exception e){
+                    System.Console.WriteLine(e);
+                }
             }
             else if(inputGameType =="0"){
                 break;
