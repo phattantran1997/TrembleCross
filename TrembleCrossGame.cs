@@ -224,7 +224,9 @@ class TrembleCrossGame : IGame
 
     public IGame loadGame()
     {
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "TrembleCross", "game.json");
+        var fullPath = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.ToString();
+
+        string filePath = Path.Combine(fullPath, "TrembleCross", "game.json");
         string jsonContent = File.ReadAllText(filePath);
         GameData gameData = JsonSerializer.Deserialize<GameData>(jsonContent);
 
@@ -256,8 +258,10 @@ class TrembleCrossGame : IGame
 
     public void saveGame()
     {
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "TrembleCross", "game.json");
+        
+        var fullPath = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.ToString();
 
+        string filePath = Path.Combine(fullPath, "TrembleCross", "game.json");
         // Deserialize existing data from file
         GameData existingData;
         if (File.Exists(filePath))
