@@ -6,7 +6,7 @@ class Program
     static void Main(string[] args)
     {
         string inputGameType = "";
-        GameController controller = new GameController();
+        // GameController controller = new GameController();
 
         while (true)
         {
@@ -17,7 +17,7 @@ class Program
             {
                 case "1":
                     IGame game = new TrembleCrossGame();
-                    controller = new GameController(game);
+                    GameController controller = new GameController(game);
 
                     Console.WriteLine("Choose an option:\n1. Create new game\n2. Load existing game");
                     string option = Console.ReadLine();

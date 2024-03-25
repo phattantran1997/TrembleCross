@@ -1,38 +1,61 @@
-class Board{
-    int x_dim {get;set;}
-    int y_dim{get;set;}
-    public List<Cell> cells {get; set;}
-    public Board(int x_dim, int y_dim){
-        this.x_dim =x_dim;
+class Board
+{
+    int x_dim { get; set; }
+    int y_dim { get; set; }
+    public List<Cell> cells { get; set; }
+    public Board(int x_dim, int y_dim)
+    {
+        this.x_dim = x_dim;
         this.y_dim = y_dim;
         List<Cell> cells = new List<Cell>();
 
-        for(int i = 0; i < x_dim; i++){
-            for(int j =0; j < y_dim; j++){
-                cells.Add(new Cell(i,j,new Piece()));
+        for (int i = 0; i < x_dim; i++)
+        {
+            for (int j = 0; j < y_dim; j++)
+            {
+                cells.Add(new Cell(i, j, new Piece()));
             }
         }
         this.cells = cells;
     }
-
-    public override string ToString(){   
-        return string.Join(",", cells.Select(cell => cell.valuePiece.name));
-;
+    public Board(Board originalBoard)
+    {
+        this.x_dim = originalBoard.x_dim;
+        this.y_dim = originalBoard.y_dim;
+        this.cells = new List<Cell>();
+        foreach (var originalCell in originalBoard.cells)
+        {
+            // Create a new Cell object with the same properties as the original Cell
+            Cell newCell = new Cell(originalCell.Row, originalCell.Column, new Piece(originalCell.valuePiece.name));
+            this.cells.Add(newCell);
+        }
     }
-    public void updateCells(int cell , Piece playerPiece){
+
+
+    public override string ToString()
+    {
+        return string.Join(",", cells.Select(cell => cell.valuePiece.name));
+        ;
+    }
+    public void updateCells(int cell, Piece playerPiece)
+    {
         this.cells[cell].valuePiece = playerPiece;
     }
-    public void updateCells(int cell, string name){
+    public void updateCells(int cell, string name)
+    {
         this.cells[cell].valuePiece = new Piece(name);
     }
-     public bool checkNotConflictCells(int cell ){
-        if(this.cells[cell].valuePiece.name == null){
-           return true;     
+    public bool checkNotConflictCells(int cell)
+    {
+        if (this.cells[cell].valuePiece.name == null)
+        {
+            return true;
         }
         return false;
     }
     // Return Human readable table
-    public string formatTable(){
+    public string formatTable()
+    {
         int rowCount = cells.Max(cell => cell.Row) + 1;
         int colCount = cells.Max(cell => cell.Column) + 1;
 
@@ -49,17 +72,19 @@ class Board{
         string result = "";
 
         // top of table
-        result += new string('-',tableWidth + colCount)+"\n";
+        result += new string('-', tableWidth + colCount) + "\n";
 
-        
+
         int width = (tableWidth - colCount) / colCount;
-        
-        for(int i = 0; i < rowCount;i++){
-            for(int j = 0; j < colCount;j++){
-                result += "|" + AlignCentre(tableArray[i,j] ?? "", width) + "|";
+
+        for (int i = 0; i < rowCount; i++)
+        {
+            for (int j = 0; j < colCount; j++)
+            {
+                result += "|" + AlignCentre(tableArray[i, j] ?? "", width) + "|";
             }
-            result += "\n"+new string('-',tableWidth+colCount) + "\n";
-        }      
+            result += "\n" + new string('-', tableWidth + colCount) + "\n";
+        }
 
         return result;
     }

@@ -165,9 +165,9 @@ class TrembleCrossGame : IGame
                 Console.WriteLine("⛳️ This cell is already occupied. Please choose another cell. ⛳️");
                 continue;
             }
-
+            this.gameCurrentState = new Board(this.gameCurrentState);
             this.gameCurrentState.updateCells(userInput, players.FirstOrDefault(p => p.PlayerID == this.turn).piece);
-            listMoveHistories.Add(this.gameCurrentState); // Save game state
+            listMoveHistories.Add(new Board(this.gameCurrentState)); // Save game state
             Console.WriteLine(this.gameCurrentState.formatTable());
 
             if (processWinner())
@@ -271,7 +271,7 @@ class TrembleCrossGame : IGame
         }
 
         // Add the new game data
-        TrembleCrossGame trembleCrossGame =  new TrembleCrossGame();
+        TrembleCrossGame trembleCrossGame = new TrembleCrossGame();
         existingData.files.Add(new GameFile
         {
             Board = this.gameCurrentState.ToString(),
