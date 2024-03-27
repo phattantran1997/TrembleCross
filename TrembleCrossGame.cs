@@ -105,7 +105,7 @@ class TrembleCrossGame : IGame
             }
             else
             {
-                Console.WriteLine($"👉 Player {this.turn}'s turn - please input your cell to play. \nor input 'S' to save the game state \n'U' to undo a step \n'R' to redo a step \n'P' to print the table");
+                Console.WriteLine($"👉 Player {this.turn}'s turn - please input your cell to play. \nor input \n'S' to save the game state \n'U' to undo a step \n'R' to redo a step \n'P' to print the table");
                 string input = Console.ReadLine(); // Read user input
 
                 // Convert input to integer if possible
@@ -132,6 +132,7 @@ class TrembleCrossGame : IGame
                     if (listMoveHistories.Count > 1)
                     {
                         listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
+                        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
                         gameCurrentState = listMoveHistories.LastOrDefault();
                         Console.WriteLine("Undo step.");
                     }
@@ -156,10 +157,7 @@ class TrembleCrossGame : IGame
                     continue;
                 }
 
-
             }
-
-
             if (!this.gameCurrentState.checkNotConflictCells(userInput))
             {
                 Console.WriteLine("⛳️ This cell is already occupied. Please choose another cell. ⛳️");
@@ -222,35 +220,12 @@ class TrembleCrossGame : IGame
         throw new NotImplementedException();
     }
 
-    public IGame loadGame()
+    public void loadGame(GameFile selectedGame)
     {
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "TrembleCross", "game.json");
-        string jsonContent = File.ReadAllText(filePath);
-        GameData gameData = JsonSerializer.Deserialize<GameData>(jsonContent);
-
-        // Display available games
-        Console.WriteLine("Available Games:");
-        for (int i = 0; i < gameData.files.Count; i++)
-        {
-            Console.WriteLine($"Game {i + 1}: Board - {gameData.files[i].Board}, Turn - {gameData.files[i].Turn}, Humans - {gameData.files[i].Humans}");
-        }
-
-        // Ask user to choose a game
-        Console.WriteLine("Enter the number of the game you want to load:");
-        int choice;
-        while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > gameData.files.Count)
-        {
-            Console.WriteLine("Invalid input. Please enter a valid game number:");
-        }
-
-        // Load the selected game
-        var selectedGame = gameData.files[choice - 1];
         var newTrembleCrossGame = new TrembleCrossGame(selectedGame.Board, selectedGame.Turn, selectedGame.Humans);
         Console.WriteLine("Game loaded successfully.");
         Console.WriteLine(newTrembleCrossGame.gameCurrentState.formatTable());
         newTrembleCrossGame.play();
-
-        return newTrembleCrossGame;
     }
 
 
@@ -284,5 +259,10 @@ class TrembleCrossGame : IGame
 
         // Write it to file
         File.WriteAllText(filePath, json);
+    }
+
+    public string getGameType()
+    {
+        return "TrembleCross";
     }
 }

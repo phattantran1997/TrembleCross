@@ -16,9 +16,9 @@ public class GameController{
     {
     }
 
-    internal IGame LoadGame()
+    internal void LoadGame(GameFile selectedGame)
     {
-        return _game.loadGame();
+        _game.loadGame(selectedGame);
     }
 
 
