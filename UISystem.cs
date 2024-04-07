@@ -30,12 +30,12 @@ public class UISystem
         bool isPlayWithHuman = Console.ReadLine() == "1";
         Console.WriteLine("Enter board size:");
         int boardSize = int.Parse(Console.ReadLine());
-        gameController.createNewGame(game.getGameType(), boardSize, isPlayWithHuman).play();
+        gameController.createNewGame(game.gameType, boardSize, isPlayWithHuman).play();
     }
 
     internal void loadGameDialog(IGame game)
     {
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), game.getGameType(), "game.json");
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), game.gameType, "game.json");
         string jsonContent = File.ReadAllText(filePath);
         GameData gameData = JsonSerializer.Deserialize<GameData>(jsonContent);
         Console.WriteLine("Available Games:");

@@ -28,7 +28,7 @@ public class GameController{
       _game.saveGame();
     }
     internal IGame createNewGame(string gameType , int boardSize, bool isPlayWithHuman){
-       IGame newGame;
+        IGame newGame;
         // Create the appropriate type of game based on gameType
         switch (gameType)
         {

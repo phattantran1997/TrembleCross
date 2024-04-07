@@ -15,11 +15,13 @@ class TrembleCrossGame : IGame
 
     public List<Player> players { get; set; } = [];
     public Board? gameCurrentState { get; set; } = null;
-    public bool isDraw { get; set; } = false;
     public List<Board> listMoveHistories { get; set; }
     public Player? winner { get; set; }
     public bool isPlayWithHuman { get; set; }
     public int turn { get; set; }
+    public bool isDraw { get; set; } = false;
+    public Board? redoGameState {get; set;} = null;
+    public string gameType { get; } = "TrembleCross";
 
     public TrembleCrossGame()
     {
@@ -27,20 +29,20 @@ class TrembleCrossGame : IGame
     public TrembleCrossGame(int boardSize, bool isPlayWithHuman)
     {
 
-        Player player1 = new Player("player1", 1);
+        Player player1 = new HumanPlayer("player1", 1);
         player1.piece = new Piece("X", player1.PlayerID);
         players.Add(player1);
         if (isPlayWithHuman)
         {
             //human player
-            Player player2 = new Player("player2", 2);
+            Player player2 = new HumanPlayer("player2", 2);
             player2.piece = new Piece("X", player2.PlayerID);
             players.Add(player2);
         }
         else
         {
             //computer
-            Player computerPlayer = new Player("computer", 2);
+            Player computerPlayer = new ComputerPlayer("computer", 2);
             computerPlayer.piece = new Piece("X", computerPlayer.PlayerID);
             players.Add(computerPlayer);
         }
@@ -59,21 +61,21 @@ class TrembleCrossGame : IGame
     }
     public TrembleCrossGame(string board, int turn, bool isPlayWithHuman)
     {
-        Player player1 = new Player("player1", 1);
+        Player player1 = new HumanPlayer("player1", 1);
         player1.piece = new Piece("X", player1.PlayerID);
         players.Add(player1);
         this.isPlayWithHuman = isPlayWithHuman;
         if (isPlayWithHuman)
         {
             //human player
-            Player player2 = new Player("player2", 2);
+            Player player2 = new HumanPlayer("player2", 2);
             player2.piece = new Piece("X", player2.PlayerID);
             players.Add(player2);
         }
         else
         {
             //computer
-            Player computerPlayer = new Player("computer", 2);
+            Player computerPlayer = new ComputerPlayer("computer", 2);
             computerPlayer.piece = new Piece("X", computerPlayer.PlayerID);
             players.Add(computerPlayer);
         }
@@ -89,24 +91,26 @@ class TrembleCrossGame : IGame
 
     public void play()
     {
+        string gameRule = "Players takes turns placing a piece 'X'. The first player that makes 3 consecutive X wins";
+        string gameCommand = $"You can input 0-{this.gameCurrentState.cells.Count-1} to make a move \nYou can press 's' to save game\nYou can press 'u' to undo a move\nYou can press 'r' to redo your move\nYou can press 'p' to display current board state";
+
+        HelpSystem helpSystem = new HelpSystem(gameRule,gameCommand);
         int userInput = 0;
-        Random random = new Random(); // Random number generator for computer's move
+        // Random random = new Random(); // Random number generator for computer's move
 
         while (true)
         {
             if (!this.isPlayWithHuman && this.turn == 2)
             {
-                Console.WriteLine($"👉 Player computer is playing ....");
-                do
-                {
-                    // Random until valid value
-                    userInput = random.Next(0, this.gameCurrentState.cells.Count);
-                } while (!this.gameCurrentState.checkNotConflictCells(userInput));
+                Console.WriteLine($"\n👉 Player computer is playing ....");
+                ComputerPlayer computerPlayer = (ComputerPlayer)players[this.turn-1];
+                userInput = int.Parse(computerPlayer.makeMove(gameCurrentState));
             }
             else
             {
-                Console.WriteLine($"👉 Player {this.turn}'s turn - please input your cell to play. \nor input \n'S' to save the game state \n'U' to undo a step \n'R' to redo a step \n'P' to print the table");
-                string input = Console.ReadLine(); // Read user input
+                helpSystem.show();
+                PrintBoardState();
+                string input = players[turn-1].makeMove(gameCurrentState); // Read user input
 
                 // Convert input to integer if possible
                 if (int.TryParse(input, out userInput))
@@ -131,10 +135,7 @@ class TrembleCrossGame : IGame
                     // Undo step
                     if (listMoveHistories.Count > 1)
                     {
-                        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
-                        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
-                        gameCurrentState = listMoveHistories.LastOrDefault();
-                        Console.WriteLine("Undo step.");
+                        undo();
                     }
                     else
                     {
@@ -145,17 +146,15 @@ class TrembleCrossGame : IGame
                 else if (input == "R")
                 {
                     // Redo step
-                    // Implement redo step logic if needed
-                    Console.WriteLine("Redo step.");
+                    redo();
                     continue;
                 }
                 else if (input == "P")
                 {
-                    // Redo step
-                    // Implement redo step logic if needed
-                    Console.WriteLine(this.gameCurrentState.formatTable());
+                    PrintBoardState();
                     continue;
                 }
+
 
             }
             if (!this.gameCurrentState.checkNotConflictCells(userInput))
@@ -164,16 +163,16 @@ class TrembleCrossGame : IGame
                 continue;
             }
             this.gameCurrentState = new Board(this.gameCurrentState);
-            this.gameCurrentState.updateCells(userInput, players.FirstOrDefault(p => p.PlayerID == this.turn).piece);
-            listMoveHistories.Add(new Board(this.gameCurrentState)); // Save game state
-            Console.WriteLine(this.gameCurrentState.formatTable());
+
+            makeMove(userInput);
 
             if (processWinner())
             {
                 winner = this.players.FirstOrDefault(item => item.PlayerID == this.gameCurrentState.cells[userInput].valuePiece.ownedByPlayer);
-                Console.WriteLine($"🎉 Player {winner.Name} wins! 🎉");
+                Console.WriteLine($"\n 🎉 Player {winner.Name} wins! 🎉 \n");
                 break;
             }
+
             this.turn = this.turn == 1 ? 2 : 1;
         }
     }
@@ -210,14 +209,33 @@ class TrembleCrossGame : IGame
         return this.gameCurrentState.formatTable();
     }
 
+    public void PrintBoardState(){
+        System.Console.WriteLine("\n"+ReturnBoardState());
+    }
+
+    public void makeMove(int userInput){
+        // Update the cell: Given by user. Where User has the same PlayerID 
+        this.gameCurrentState.updateCells(userInput, players.FirstOrDefault(p => p.PlayerID == this.turn).piece);
+        listMoveHistories.Add(new Board(this.gameCurrentState)); // Save game state
+    }
+
+    // Redo previous move
     public void redo()
     {
-        throw new NotImplementedException();
+        gameCurrentState = redoGameState;
+        listMoveHistories.Add(new Board(this.gameCurrentState));
+        Console.WriteLine("Redo step complete.");
+        PrintBoardState();    
     }
 
     public void undo()
     {
-        throw new NotImplementedException();
+        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
+        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
+        this.redoGameState = listMoveHistories[listMoveHistories.Count];
+        gameCurrentState = listMoveHistories.LastOrDefault();
+        Console.WriteLine("Undo step complete.");    
+        PrintBoardState();
     }
 
     public void loadGame(GameFile selectedGame)
@@ -245,8 +263,6 @@ class TrembleCrossGame : IGame
             existingData = new GameData { files = new List<GameFile>() };
         }
 
-        // Add the new game data
-        TrembleCrossGame trembleCrossGame = new TrembleCrossGame();
         existingData.files.Add(new GameFile
         {
             Board = this.gameCurrentState.ToString(),
@@ -259,10 +275,5 @@ class TrembleCrossGame : IGame
 
         // Write it to file
         File.WriteAllText(filePath, json);
-    }
-
-    public string getGameType()
-    {
-        return "TrembleCross";
     }
 }
