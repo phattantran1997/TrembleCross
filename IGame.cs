@@ -1,10 +1,10 @@
 interface IGame
 {
-    List<Player> players { get; set; }
+    List<IPlayer> players { get; set; }
     int turn { get; set; }
     Board gameCurrentState { get; set; }
     List<Board> listMoveHistories { get; set; }
-    Player winner { get; set; }
+    IPlayer winner { get; set; }
     string gameType{get;}
     Board redoGameState {get; set;} 
 

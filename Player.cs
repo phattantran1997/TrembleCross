@@ -1,4 +1,4 @@
-interface Player{
+interface IPlayer{
     public string Name {get; set;}
     public int PlayerID {get;set;}
     public int Score {get; set;}
@@ -7,7 +7,7 @@ interface Player{
     
     public string makeMove(Board gameCurrentState);
 }
-class HumanPlayer: Player{
+class HumanPlayer: IPlayer{
     public string Name {get; set;}
     public int PlayerID {get;set;}
     public int Score {get; set;}
@@ -33,7 +33,7 @@ class HumanPlayer: Player{
         }
     }
 }
-class ComputerPlayer : Player
+class ComputerPlayer : IPlayer
 {
     public string Name {get; set;}
     public int PlayerID {get;set;}
