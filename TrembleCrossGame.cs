@@ -150,6 +150,10 @@ class TrembleCrossGame : IGame
                 }
                 else if (input == "R")
                 {
+                    if (redoGameState == null){
+                        System.Console.WriteLine("Sorry you can not redo");
+                        continue;
+                    }
                     // Redo step
                     redo();
                     continue;
@@ -247,8 +251,9 @@ class TrembleCrossGame : IGame
     {
         listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
         listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
-        this.redoGameState = listMoveHistories[listMoveHistories.Count];
+        this.redoGameState = listMoveHistories[listMoveHistories.Count-1];
         gameCurrentState = listMoveHistories.LastOrDefault();
+
         Console.WriteLine("Undo step complete.");    
         PrintBoardState();
     }
