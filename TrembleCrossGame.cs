@@ -241,6 +241,7 @@ class TrembleCrossGame : IGame
     public void redo()
     {
         gameCurrentState = redoGameState;
+        redoGameState = null;
         listMoveHistories.Add(new Board(this.gameCurrentState));
         Console.WriteLine("Redo step complete.");
         PrintBoardState();    
@@ -249,11 +250,12 @@ class TrembleCrossGame : IGame
     // Undo move
     public void undo()
     {
-        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
-        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
-        this.redoGameState = listMoveHistories[listMoveHistories.Count-1];
-        gameCurrentState = listMoveHistories.LastOrDefault();
+        this.redoGameState = gameCurrentState;
 
+        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
+        listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
+        gameCurrentState = listMoveHistories.LastOrDefault();
+        
         Console.WriteLine("Undo step complete.");    
         PrintBoardState();
     }
