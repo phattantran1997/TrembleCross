@@ -116,6 +116,10 @@ class TrembleCrossGame : IGame
                 // Convert input to integer if possible
                 if (int.TryParse(input, out userInput))
                 {
+                    if (input == "-1"){
+                        System.Console.WriteLine("Invalid input");
+                        continue;
+                    }
                     userInput = int.Parse(input);
                 }
                 else

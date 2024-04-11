@@ -70,9 +70,14 @@ public class UISystem
                 Console.WriteLine("Exiting the game.");
                 return;
             }
-            
-            if (inputGameType == "2"){
+            else if (inputGameType == "1"){
+            }
+            else if (inputGameType == "2"){
                 Console.WriteLine("\nSorry this game had not been implemeneted yet\n");
+                continue;
+            }
+            else{
+                Console.WriteLine("\nInvalid input please try again\n");
                 continue;
             }
 
