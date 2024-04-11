@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Text.Json;
 
 public class UISystem
@@ -7,6 +5,7 @@ public class UISystem
     private GameController gameController { get; set; } = new GameController();
     private IGame game = null;
 
+    // Create Game object
     private IGame InitializeGame(string gameType)
     {
         switch (gameType)
@@ -15,6 +14,7 @@ public class UISystem
                 game = new TrembleCrossGame();
                 break;
             case "2":
+                // game = new ReversiGame();
                 Console.WriteLine("this game not yet implemented so game will be empty");
                 break;
             default:
@@ -24,18 +24,24 @@ public class UISystem
         return game;
     }
 
+    // User Input 
     internal void createNewGameDialog(IGame game)
     {
+        
+
         Console.WriteLine("Choose opponent:\n1. Human\n2. Computer");
         bool isPlayWithHuman = Console.ReadLine() == "1";
         Console.WriteLine("Enter board size:");
         int boardSize = int.Parse(Console.ReadLine());
-        gameController.createNewGame(game.getGameType(), boardSize, isPlayWithHuman).play();
+    
+
+
+        gameController.createNewGame(game.gameType, boardSize, isPlayWithHuman).play();
     }
 
     internal void loadGameDialog(IGame game)
     {
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), game.getGameType(), "game.json");
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), game.gameType, "game.json");
         string jsonContent = File.ReadAllText(filePath);
         GameData gameData = JsonSerializer.Deserialize<GameData>(jsonContent);
         Console.WriteLine("Available Games:");
@@ -64,15 +70,16 @@ public class UISystem
                 Console.WriteLine("Exiting the game.");
                 return;
             }
-
-            if (inputGameType != "1" && inputGameType != "2")
-            {
-                Console.WriteLine("Invalid option. Please choose again.");
+            
+            if (inputGameType == "2"){
+                Console.WriteLine("\nSorry this game had not been implemeneted yet\n");
                 continue;
             }
 
             Console.WriteLine("Choose an option:\n1. Create new game\n2. Load existing game");
             string inputGameMode = Console.ReadLine();
+
+        
 
             if (inputGameMode != "1" && inputGameMode != "2")
             {

@@ -10,6 +10,4 @@ class Piece {
         this.name = name;
         this.ownedByPlayer = ownedByPlayer;
     }
-
-
 }
