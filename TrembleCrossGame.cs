@@ -107,6 +107,8 @@ class TrembleCrossGame : IGame
             }
             else
             {
+                Console.WriteLine($"\n👉 Player {players[turn-1].PlayerID} is playing ....");
+
                 helpSystem.show();
                 PrintBoardState();
                 string input = players[turn-1].makeMove(gameCurrentState); // Read user input
