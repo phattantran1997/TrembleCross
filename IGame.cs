@@ -6,7 +6,7 @@ interface IGame
     List<Board> listMoveHistories { get; set; }
     IPlayer winner { get; set; }
     string gameType{get;}
-    Board redoGameState {get; set;} 
+    Stack<Board> redoGameState {get; set;} 
 
     void loadGame(GameFile selectedGame);
     void saveGame();
