@@ -107,6 +107,8 @@ class TrembleCrossGame : IGame
             }
             else
             {
+                Console.WriteLine($"\n👉 Player {players[turn-1].PlayerID} is playing ....");
+
                 helpSystem.show();
                 PrintBoardState();
                 string input = players[turn-1].makeMove(gameCurrentState); // Read user input
@@ -114,6 +116,10 @@ class TrembleCrossGame : IGame
                 // Convert input to integer if possible
                 if (int.TryParse(input, out userInput))
                 {
+                    if (input == "-1"){
+                        System.Console.WriteLine("Invalid input");
+                        continue;
+                    }
                     userInput = int.Parse(input);
                 }
                 else
@@ -144,6 +150,10 @@ class TrembleCrossGame : IGame
                 }
                 else if (input == "R")
                 {
+                    if (redoGameState == null){
+                        System.Console.WriteLine("Sorry you can not redo");
+                        continue;
+                    }
                     // Redo step
                     redo();
                     continue;
@@ -231,6 +241,7 @@ class TrembleCrossGame : IGame
     public void redo()
     {
         gameCurrentState = redoGameState;
+        redoGameState = null;
         listMoveHistories.Add(new Board(this.gameCurrentState));
         Console.WriteLine("Redo step complete.");
         PrintBoardState();    
@@ -239,10 +250,12 @@ class TrembleCrossGame : IGame
     // Undo move
     public void undo()
     {
+        this.redoGameState = gameCurrentState;
+
         listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
         listMoveHistories.RemoveAt(listMoveHistories.Count - 1);
-        this.redoGameState = listMoveHistories[listMoveHistories.Count];
         gameCurrentState = listMoveHistories.LastOrDefault();
+        
         Console.WriteLine("Undo step complete.");    
         PrintBoardState();
     }

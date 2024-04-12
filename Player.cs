@@ -20,9 +20,15 @@ class HumanPlayer: IPlayer{
     }
     public string makeMove(Board gameCurrentState){
         string input = Console.ReadLine();
+        int move;
 
-        if(int.Parse(input) >= 0 && int.Parse(input) < gameCurrentState.cells.Count){
-            return input;
+        if(int.TryParse(input, out move)){
+            if(move>= 0 &&move < gameCurrentState.cells.Count){
+                return input;
+            }
+            else{
+                return "-1";
+            }
         }
         else if(input.ToUpper() == "U" || input.ToUpper() == "R" || input.ToUpper() == "P" || input.ToUpper() == "S"){
             return input.ToUpper();
