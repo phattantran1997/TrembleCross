@@ -2,7 +2,8 @@ using System.Text.Json;
 
 public class UISystem
 {
-    private GameController gameController { get; set; } = new GameController();
+    private GameController GameControllerInstance => GameController.Instance;
+
     private IGame game = null;
 
     // Create Game object
@@ -20,7 +21,7 @@ public class UISystem
             default:
                 throw new ArgumentException("Invalid game type.");
         }
-        gameController = new GameController(game);
+        GameControllerInstance.InitGame(game);
         return game;
     }
 
@@ -36,7 +37,7 @@ public class UISystem
     
 
 
-        gameController.createNewGame(game.gameType, boardSize, isPlayWithHuman).play();
+        GameControllerInstance.CreateNewGame(game.gameType, boardSize, isPlayWithHuman).play();
     }
 
     internal void loadGameDialog(IGame game)
@@ -55,7 +56,7 @@ public class UISystem
         {
             Console.WriteLine("Invalid input. Please enter a valid game number:");
         }
-        gameController.LoadGame(gameData.files[choice - 1]);
+        GameControllerInstance.LoadGame(gameData.files[choice - 1]);
     }
 
     public void Initialize()
